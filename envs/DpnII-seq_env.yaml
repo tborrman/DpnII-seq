@@ -1,0 +1,10 @@
+name: DpnII-seq
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=2.7.9
+  - bowtie=1.0.0
+  - samtools=0.1.19
+  - bedtools=2.17.0
