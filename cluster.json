@@ -1,0 +1,11 @@
+{
+	"__default__":
+	{  
+	"queue"	: "short",
+  	"time": "4:00",
+	"cores"	: 10,
+	"memory": "\"rusage[mem=5000] span[hosts=1]\"",
+	"output":	"logs/cluster/test.out",
+	"error"	: "logs/cluster/test.err"
+	}
+}
