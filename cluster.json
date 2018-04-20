@@ -1,11 +1,32 @@
 {
 	"__default__":
 	{  
-	"queue"	: "short",
-  	"time": "4:00",
-	"cores"	: 10,
-	"memory": "\"rusage[mem=5000] span[hosts=1]\"",
-	"output":	"logs/cluster/test.out",
-	"error"	: "logs/cluster/test.err"
+		"queue"	: "short",
+	  	"time": "4:00",
+		"cores"	: 1,
+		"memory": "\"rusage[mem=5000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}.out",
+		"error"	: "logs/cluster/{wildcards.sample}.err"
+	},
+
+	"bowtie_map":
+	{
+		"queue"	: "short",
+	  	"time": "4:00",
+		"cores"	: 10,
+		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}_bowtie_map.out",
+		"error"	: "logs/cluster/{wildcards.sample}_bowtie_map.err"
+	},
+
+	"filter_near_sites":
+	{
+		"queue"	: "short",
+	  	"time": "4:00",
+		"cores"	: 14,
+		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}_filter_near_sites.out",
+		"error"	: "logs/cluster/{wildcards.sample}_bowtie_near_sites.err"
 	}
 }
+	
