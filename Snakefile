@@ -1,13 +1,12 @@
 import sys
 import math
 # configfile:'config.yaml'
-
+SAMPLES = ['HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test']
 data_dir = '/home/tb37w/project/Research/digest/dpnII'
 
 rule all:
 	input:
-		'distances/HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test_3_distance_001',
-		'distances/HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test_dpnII_abs_frag_distances_001'
+		dynamic(expand('split_reads/{sample}/split_{{n}}', sample=SAMPLES))
 
 # Map reads
 rule bowtie_map:
@@ -30,55 +29,41 @@ rule remove_multimappers:
 	input:
 		'mapped_reads/{sample}.sam'
 	output:
-		b='mapped_reads/{sample}_remove_multi.bam',
-		s='mapped_reads/{sample}_remove_multi.sam'
+		b='remove_multimappers/{sample}_remove_multi.bam',
+		s='remove_multimappers/{sample}_remove_multi.sam'
+	
 	shell:
-		'samtools view -bS {input} | samtools view -F 4 -h - | '
-		'tee {output.s} | samtools view -bS - > {output.b}'
+		'''
+		samtools view -bS {input} | samtools view -F 4 -h - | \
+		tee {output.s} | samtools view -bS - > {output.b}
+		'''
+		
 
-# rule count_splitfiles:
+rule split:
+	input:
+		s='remove_multimappers/{sample}_remove_multi.sam'
+	output:
+		dynamic('split_reads/{sample}/split_{n}')
+	shell:
+		'''
+		tail -n+28 {input.s} | split -a 3 -d -l 100 - \
+		split_reads/{wildcards.sample}/split_
+		'''
+
+
+# input:
+# 	splitty/{sample}/split_{n}
+# rule filter_near_sites:
 # 	input:
-# 		'mapped_reads/{sample}_remove_multi.sam'
+# 		expand('mapped_reads/{{sample}}_{n}', n= ['{:03d}'.format(x) for x in range(1,15)])
+# 		#'mapped_reads/{sample}_000'
 # 	output:
-# 		'mapped_reads/{sample}_numfiles.txt'
-# 	message:
-# 		'FUCK'
+# 		expand('distances/{{sample}}_dpnII_abs_frag_distances_{n}',n= ['{:03d}'.format(x) for x in range(1,15)]),
+# 		expand('distances/{{sample}}_3_distance_{n}',n= ['{:03d}'.format(x) for x in range(1,15)])
+# 	threads:14
 # 	run:
-# 		with open(input[0]) as f:
-# 			for i, l in enumerate(f):
-# 				pass
-# 		numlines = i + 1
-# 		if numlines % 1000 == 0:
-# 			numfiles = numlines / 1000
-# 		else:
-# 			numfiles = math.floor(numlines / 1000) + 1
-# 		with open(output[0], 'w') as o:
-# 			o.write(str(numfiles) + '\n')
-# 			o.write(str(numlines) + '\n')
-
-rule splitfiles:
-	input:
-		s='mapped_reads/{sample}_remove_multi.sam'
-	output:
-		# Don't know n ahead of time how the fuck do i pass this in?
-		expand('mapped_reads/{{sample}}_{n}', n=['{:03d}'.format(x) for x in range(15)])
-		#'mapped_reads/{sample}_000'
-
-	shell:
-		'tail -n+28 {input.s} | split -a 3 -d -l 100 - '
-		'mapped_reads/{wildcards.sample}_'
-
-rule filter_near_sites:
-	input:
-		expand('mapped_reads/{{sample}}_{n}', n= ['{:03d}'.format(x) for x in range(1,15)])
-		#'mapped_reads/{sample}_000'
-	output:
-		expand('distances/{{sample}}_dpnII_abs_frag_distances_{n}',n= ['{:03d}'.format(x) for x in range(1,15)]),
-		expand('distances/{{sample}}_3_distance_{n}',n= ['{:03d}'.format(x) for x in range(1,15)])
-	threads:14
-	run:
-		for i in input:
-			shell('scripts/dpnII_abs_frag_distance.py -s {i} -w {wildcards.sample}')
+# 		for i in input:
+# 			shell('scripts/dpnII_abs_frag_distance.py -s {i} -w {wildcards.sample}')
 
 		
 

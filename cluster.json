@@ -3,7 +3,7 @@
 	{  
 		"queue"	: "short",
 	  	"time": "4:00",
-		"cores"	: 1,
+		"cores"	: 10,
 		"memory": "\"rusage[mem=5000] span[hosts=1]\"",
 		"output":	"logs/cluster/{wildcards.sample}.out",
 		"error"	: "logs/cluster/{wildcards.sample}.err"
@@ -28,5 +28,6 @@
 		"output":	"logs/cluster/{wildcards.sample}_filter_near_sites.out",
 		"error"	: "logs/cluster/{wildcards.sample}_bowtie_near_sites.err"
 	}
+
 }
 	
