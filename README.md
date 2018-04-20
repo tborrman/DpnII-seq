@@ -12,3 +12,5 @@ conda config --add channels bioconda
 conda env create --file envs/DpnII-seq_env.yaml
 source activate DpnII-seq
 ```
+## DAG
+<img src="https://github.com/tborrman/DpnII-seq/blob/master/dag.svg" alt="dag" width=500px>
