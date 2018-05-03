@@ -6,7 +6,10 @@ data_dir = '/home/tb37w/project/Research/digest/dpnII'
 
 rule all:
 	input:
-		dynamic(expand('split_reads/{sample}/split_{{n}}', sample=SAMPLES))
+		#dynamic(expand('split_reads/{sample}/split_{{n}}', sample=SAMPLES))
+		#expand('test_{sample}.txt', sample=SAMPLES)
+		#dynamic(expand('distances/{sample}/3_distance_{{n}}', sample=SAMPLES))
+		expand('{sample}_3_distance.sam', sample=SAMPLES)
 
 # Map reads
 rule bowtie_map:
@@ -29,16 +32,24 @@ rule remove_multimappers:
 	input:
 		'mapped_reads/{sample}.sam'
 	output:
-		b='remove_multimappers/{sample}_remove_multi.bam',
-		s='remove_multimappers/{sample}_remove_multi.sam'
-	
+		#b='remove_multimappers/{sample}_remove_multi.bam',
+		s='remove_multimappers/{sample}_remove_multi.sam'		
+	log:
+		'logs/remove_multimappers/{sample}_remove_multimappers.log'
 	shell:
 		'''
-		samtools view -bS {input} | samtools view -F 4 -h - | \
-		tee {output.s} | samtools view -bS - > {output.b}
+		samtools view -bS {input} | samtools view -F 4 -h - > {output.s} 
+		'''
+rule get_header:
+	input:
+		s='remove_multimappers/{sample}_remove_multi.sam'
+	output:
+		h='remove_multimappers/{sample}_remove_multi.header'
+	shell:
+		'''
+		head -27 {input.s} > {output.h}
 		'''
 		
-
 rule split:
 	input:
 		s='remove_multimappers/{sample}_remove_multi.sam'
@@ -48,6 +59,30 @@ rule split:
 		'''
 		tail -n+28 {input.s} | split -a 3 -d -l 100 - \
 		split_reads/{wildcards.sample}/split_
+		'''
+rule filter_near_sites:
+	input: 
+		#a=dynamic('split_reads/{sample}/split_{n}')
+		s ='split_reads/{sample}/split_{n}'
+	output:
+		'distances/{sample}/3_distance_{n}'
+	shell:
+		'''
+		scripts/dpnII_abs_frag_distance.py -s {input.s} \
+		-w {wildcards.sample}
+		'''
+
+rule merge:
+	input:
+		d=dynamic('distances/{sample}/3_distance_{n}'),
+		h='remove_multimappers/{sample}_remove_multi.header'
+	output:
+		t='{sample}_3_distance.sam'
+	message:
+		'{input.d}'
+	shell:
+		'''
+		cat {input.h} {input.d} > {output.t}
 		'''
 
 

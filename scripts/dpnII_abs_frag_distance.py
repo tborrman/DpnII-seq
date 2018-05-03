@@ -68,11 +68,11 @@ def main():
 	# Parse SAM file
 	SAM = open(args.s, 'r')
 	index = args.s[-3:]
-	OUT = open('distances/'+args.w + '_dpnII_abs_frag_distances_'+index,'w')
+	OUT = open('distances/'+args.w + '/dpnII_abs_frag_distances_'+index,'w')
 	if args.o:
 		ZERO_DIST_OUT = open('zero_distance_'+index, 'w')
 		NONZERO_DIST_OUT = open('nonzero_distance_'+index, 'w')
-	CUTOFF_DIST_OUT = open('distances/'+args.w + '_'+ str(args.c) + '_distance_'+index, 'w')
+	CUTOFF_DIST_OUT = open('distances/'+args.w + '/'+ str(args.c) + '_distance_'+index, 'w')
 	counter = 0
 	while True:
 		line1=SAM.readline()
