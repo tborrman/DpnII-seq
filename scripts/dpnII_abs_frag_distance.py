@@ -68,7 +68,7 @@ def main():
 	# Parse SAM file
 	SAM = open(args.s, 'r')
 	index = args.s[-3:]
-	OUT = open('distances/'+args.w + '/dpnII_abs_frag_distances_'+index,'w')
+	OUT = open('distances/'+args.w + '/abs_frag_distances_'+index,'w')
 	if args.o:
 		ZERO_DIST_OUT = open('zero_distance_'+index, 'w')
 		NONZERO_DIST_OUT = open('nonzero_distance_'+index, 'w')

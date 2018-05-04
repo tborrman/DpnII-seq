@@ -9,7 +9,9 @@ rule all:
 		#dynamic(expand('split_reads/{sample}/split_{{n}}', sample=SAMPLES))
 		#expand('test_{sample}.txt', sample=SAMPLES)
 		#dynamic(expand('distances/{sample}/3_distance_{{n}}', sample=SAMPLES))
-		expand('{sample}_3_distance.sam', sample=SAMPLES)
+		expand('{sample}_3_distance.sam', sample=SAMPLES),
+		#expand('{sample}_abs_frag_distances.txt', sample=SAMPLES)
+		expand('plots/{sample}_distance_hist.pdf', sample=SAMPLES)
 
 # Map reads
 rule bowtie_map:
@@ -65,25 +67,44 @@ rule filter_near_sites:
 		#a=dynamic('split_reads/{sample}/split_{n}')
 		s ='split_reads/{sample}/split_{n}'
 	output:
-		'distances/{sample}/3_distance_{n}'
+		'distances/{sample}/3_distance_{n}',
+		'distances/{sample}/abs_frag_distances_{n}'
 	shell:
 		'''
 		scripts/dpnII_abs_frag_distance.py -s {input.s} \
 		-w {wildcards.sample}
 		'''
 
-rule merge:
+rule merge_sams:
 	input:
 		d=dynamic('distances/{sample}/3_distance_{n}'),
 		h='remove_multimappers/{sample}_remove_multi.header'
 	output:
 		t='{sample}_3_distance.sam'
-	message:
-		'{input.d}'
 	shell:
 		'''
 		cat {input.h} {input.d} > {output.t}
 		'''
+rule merge_distances:
+	input:
+		d=dynamic('distances/{sample}/abs_frag_distances_{n}')
+	output:
+		t='{sample}_abs_frag_distances.txt'
+	shell:
+		'''
+		cat {input.d} > {output.t}
+		'''
+rule plot_distance_distribution:
+	input:
+		d = '{sample}_abs_frag_distances.txt'
+	output:
+		p = 'plots/{sample}_distance_hist.pdf'
+	shell:
+		'''
+		scripts/dpnII_abs_frag_distance_hist.R \
+		-f {input.d} -w {wildcards.sample}
+		''' 
+
 
 
 # input:

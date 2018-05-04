@@ -6,13 +6,14 @@ Install Snakemake via Miniconda [here](https://snakemake.readthedocs.io/en/stabl
 conda config --add channels defaults
 conda config --add channels conda-forge
 conda config --add channels bioconda
+conda config --add channels r
 ```
 ##### Set up Environment
 ```bash
 conda env create --file envs/DpnII-seq_env.yaml
 source activate DpnII-seq
 ```
-#### Snake Command
+##### Snake Command
 ```bash
 snakemake -j 10 --latency-wait 60 --cluster-config cluster.json --cluster "bsub -q {cluster.queue} -W {cluster.time} -R {cluster.memory} -n {cluster.cores} -o {cluster.output} -e {cluster.error}" -p
 ```
