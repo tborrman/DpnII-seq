@@ -1,5 +1,5 @@
 import sys
-import math
+
 # configfile:'config.yaml'
 SAMPLES = ['HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test']
 data_dir = '/home/tb37w/project/Research/digest/dpnII'
@@ -9,9 +9,13 @@ rule all:
 		#dynamic(expand('split_reads/{sample}/split_{{n}}', sample=SAMPLES))
 		#expand('test_{sample}.txt', sample=SAMPLES)
 		#dynamic(expand('distances/{sample}/3_distance_{{n}}', sample=SAMPLES))
-		expand('{sample}_3_distance.sam', sample=SAMPLES),
+		#expand('{sample}_3_distance.sam', sample=SAMPLES),
 		#expand('{sample}_abs_frag_distances.txt', sample=SAMPLES)
-		expand('plots/{sample}_distance_hist.pdf', sample=SAMPLES)
+		expand('plots/{sample}_distance_hist.pdf', sample=SAMPLES),
+		#expand('{sample}_coverage_500kb.bed', sample=SAMPLES)
+		expand('{sample}_copy_correct_coverage_500kb.bed', sample=SAMPLES),
+		expand('{sample}_copy_correct_coverage_40kb.bed', sample=SAMPLES)
+
 
 # Map reads
 rule bowtie_map:
@@ -105,21 +109,54 @@ rule plot_distance_distribution:
 		-f {input.d} -w {wildcards.sample}
 		''' 
 
+rule bin_500kb:
+	input:
+		r='{sample}_3_distance.sam'
+	output:
+		c='{sample}_coverage_500kb.bed'
+	shell:
+		'samtools view -bS {input.r} | bedtools coverage '
+		'-abam - -b ' + data_dir + '/data/binning/hg19_500kb.bed | '
+		'grep -v chrM |  grep -v chrY | sort -k1,1V -k2,2n '
+		'> {output.c}'
+
+rule bin_40kb:
+	input:
+		r='{sample}_3_distance.sam'
+	output:
+		c='{sample}_coverage_40kb.bed'
+	shell:
+		'samtools view -bS {input.r} | bedtools coverage '
+		'-abam - -b ' + data_dir + '/data/binning/hg19_40kb.bed | '
+		'grep -v chrM |  grep -v chrY | sort -k1,1V -k2,2n '
+		'> {output.c}'
+
+rule copy_number_correct_500kb:
+	input:
+		c='{sample}_coverage_500kb.bed'
+	output:
+		o='{sample}_copy_correct_coverage_500kb.bed'
+	shell:
+		'scripts/copy_correct.py -i {input.c} '
+		'-c ' + data_dir + '/data/copy_number/K562_copynumber_500kb.bed '
+		'> {output.o}'
+
+rule copy_number_correct_40kb:
+	input:
+		c='{sample}_coverage_40kb.bed'
+	output:
+		o='{sample}_copy_correct_coverage_40kb.bed'
+	shell:
+		'scripts/copy_correct.py -i {input.c} '
+		'-c ' + data_dir + '/data/copy_number/K562_copynumber_40kb.bed '
+		'> {output.o}'
 
 
-# input:
-# 	splitty/{sample}/split_{n}
-# rule filter_near_sites:
-# 	input:
-# 		expand('mapped_reads/{{sample}}_{n}', n= ['{:03d}'.format(x) for x in range(1,15)])
-# 		#'mapped_reads/{sample}_000'
-# 	output:
-# 		expand('distances/{{sample}}_dpnII_abs_frag_distances_{n}',n= ['{:03d}'.format(x) for x in range(1,15)]),
-# 		expand('distances/{{sample}}_3_distance_{n}',n= ['{:03d}'.format(x) for x in range(1,15)])
-# 	threads:14
-# 	run:
-# 		for i in input:
-# 			shell('scripts/dpnII_abs_frag_distance.py -s {i} -w {wildcards.sample}')
+
+
+
+
+
 
 		
 
