@@ -72,7 +72,7 @@ def main():
 	if args.o:
 		ZERO_DIST_OUT = open('zero_distance_'+index, 'w')
 		NONZERO_DIST_OUT = open('nonzero_distance_'+index, 'w')
-	CUTOFF_DIST_OUT = open('distances/'+args.w + '/'+ str(args.c) + '_distance_'+index, 'w')
+	CUTOFF_DIST_OUT = open('filtered_sams/'+args.w + '/'+ str(args.c) + '_distance_'+index, 'w')
 	counter = 0
 	while True:
 		line1=SAM.readline()

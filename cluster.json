@@ -17,7 +17,16 @@
 		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
 		"output":	"logs/cluster/{wildcards.sample}_bowtie_map.out",
 		"error"	: "logs/cluster/{wildcards.sample}_bowtie_map.err"
+	},
+	
+	"filter_near_sites":
+	{		
+		"queue"	: "long",
+	  	"time": "36:00",
+		"cores"	: 1,
+		"memory": "\"rusage[mem=5000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}_filter_near_sites.out",
+		"error"	: "logs/cluster/{wildcards.sample}_filter_near_sites.err"
 	}
-
 }
 	
