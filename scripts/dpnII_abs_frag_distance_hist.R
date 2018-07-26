@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 library(argparse)
 
-parser <- ArgumentParser(description="Histogram of distances from fragment start to DpnII sites")
+parser <- ArgumentParser(description="Histogram of distances from fragment start/end to nearest DpnII cut site")
 parser$add_argument("-f", help="distance file (ex. dpnII_distances)", type="character", dest="f", required=TRUE)
 parser$add_argument("-w", help="wildcard for sample (ex. HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008)", type="character", dest="w", required=TRUE)
 

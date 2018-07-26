@@ -1,7 +1,11 @@
+import sys
+
 configfile: 'config.yaml'
 #SAMPLES = ['SAMPLE_ID']
 #SAMPLES = ['HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008']
 #data_dir = '/home/tb37w/project/Research/digest/dpnII'
+
+print(config['restrict_enzy'])
 
 rule all:
 	input:
@@ -56,18 +60,34 @@ rule split:
 		tail -n+28 {input.s} | split -a 3 -d -l 100000 - \
 		split_reads/{wildcards.sample}/split_
 		'''
-		
-rule filter_near_sites:
-	input: 
-		s ='split_reads/{sample}/split_{n}'
-	output:
-		'filtered_sams/{sample}/3_distance_{n}',
-		'distances/{sample}/abs_frag_distances_{n}'
-	shell:
-		'''
-		scripts/dpnII_abs_frag_distance.py -s {input.s} \
-		-w {wildcards.sample}
-		'''
+	
+if config['restrict_enzy'] == 'DpnII':
+	rule filter_near_sites:
+		input: 
+			s ='split_reads/{sample}/split_{n}'
+		output:
+			'filtered_sams/{sample}/3_distance_{n}',
+			'distances/{sample}/abs_frag_distances_{n}'
+		shell:
+			'''
+			scripts/dpnII_abs_frag_distance.py -s {input.s} \
+			-w {wildcards.sample}
+			'''
+elif config['restrict_enzy'] == 'HindIII':
+	rule filter_near_sites:
+		input: 
+			s ='split_reads/{sample}/split_{n}'
+		output:
+			'filtered_sams/{sample}/3_distance_{n}',
+			'distances/{sample}/abs_frag_distances_{n}'
+		shell:
+			'''
+			scripts/hindIII_abs_frag_distance.py -s {input.s} \
+			-w {wildcards.sample}
+			'''
+else:
+	print('No restriction enzyme given in config.yaml')
+	sys.exit()
 
 rule merge_sams:
 	input:
@@ -89,16 +109,33 @@ rule merge_distances:
 		'''
 		cat {input.d} > {output.t}
 		'''
-rule plot_distance_distribution:
-	input:
-		d = 'distances/{sample}/{sample}_abs_frag_distances.txt'
-	output:
-		p = 'plots/{sample}_distance_hist.pdf'
-	shell:
-		'''
-		scripts/dpnII_abs_frag_distance_hist.R \
-		-f {input.d} -w {wildcards.sample}
-		''' 
+
+if config['restrict_enzy'] == 'DpnII':
+	rule plot_distance_distribution:
+		input:
+			d = 'distances/{sample}/{sample}_abs_frag_distances.txt'
+		output:
+			p = 'plots/{sample}_distance_hist.pdf'
+		shell:
+			'''
+			scripts/dpnII_abs_frag_distance_hist.R \
+			-f {input.d} -w {wildcards.sample}
+			''' 
+
+elif config['restrict_enzy'] == 'HindIII':
+	rule plot_distance_distribution:
+		input:
+			d = 'distances/{sample}/{sample}_abs_frag_distances.txt'
+		output:
+			p = 'plots/{sample}_distance_hist.pdf'
+		shell:
+			'''
+			scripts/hindIII_abs_frag_distance_hist.R \
+			-f {input.d} -w {wildcards.sample}
+			''' 
+else:
+	print('No restriction enzyme given in config.yaml')
+	sys.exit()
 
 rule bin_500kb:
 	input:

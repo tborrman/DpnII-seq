@@ -1,11 +1,6 @@
 samples: 
-  - HBDpSeq-K562-16h-R1_S16_L002
-  - HBDpSeq-K562-1h-R1_S11_L002
-  - HBDpSeq-K562-2h-R1_S12_L002
-  - HBDpSeq-K562-3h-R1_S13_L002
-  - HBDpSeq-K562-4h-R3_S14_L002
-  - HBDpSeq-K562-5min-R1_S10_L002
-  - HBDpSeq-K562-8h-R1_S15_L002
+  - HBCRACKHiC-K562-HN-TD-R1_ACAGTG_L008
 
+restrict_enzy: HindIII
 
 data_dir: /home/tb37w/project/Research/digest/dpnII/data
