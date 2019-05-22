@@ -11,8 +11,8 @@
 
 	"bowtie_map":
 	{
-		"queue"	: "short",
-	  	"time": "4:00",
+		"queue"	: "long",
+	  	"time": "12:00",
 		"cores"	: 10,
 		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
 		"output":	"logs/cluster/{wildcards.sample}_bowtie_map.out",
