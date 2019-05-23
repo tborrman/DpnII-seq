@@ -57,7 +57,7 @@ rule split:
 		#dynamic('split_reads/{sample}/split_{n}')
 	shell:
 		'''
-		tail -n+28 {input.s} | split -a 3 -d -l 100000 - \
+		tail -n+28 {input.s} | split -a 4 -d -l 100000 - \
 		split_reads/{wildcards.sample}/split_
 		'''
 	
