@@ -13,4 +13,6 @@ samples:
 
 restrict_enzy: DpnII
 
+read_length: '50'
+
 data_dir: /home/tb37w/project/Research/digest/dpnII/data

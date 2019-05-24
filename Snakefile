@@ -69,10 +69,9 @@ if config['restrict_enzy'] == 'DpnII':
 			'filtered_sams/{sample}/3_distance_{n}',
 			'distances/{sample}/abs_frag_distances_{n}'
 		shell:
-			'''
-			scripts/dpnII_abs_frag_distance.py -s {input.s} \
-			-w {wildcards.sample}
-			'''
+			'scripts/dpnII_abs_frag_distance.py -s {input.s} '
+			'-w {wildcards.sample} -r ' + config['read_length']
+
 elif config['restrict_enzy'] == 'HindIII':
 	rule filter_near_sites:
 		input: 
@@ -81,10 +80,8 @@ elif config['restrict_enzy'] == 'HindIII':
 			'filtered_sams/{sample}/3_distance_{n}',
 			'distances/{sample}/abs_frag_distances_{n}'
 		shell:
-			'''
-			scripts/hindIII_abs_frag_distance.py -s {input.s} \
-			-w {wildcards.sample}
-			'''
+			'scripts/hindIII_abs_frag_distance.py -s {input.s} '
+			'-w {wildcards.sample} -r ' + config['read_length']
 else:
 	print('No restriction enzyme given in config.yaml')
 	sys.exit()

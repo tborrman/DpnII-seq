@@ -11,6 +11,7 @@ parser.add_argument('-s', help='SAM file with alignment reads (bowtie_output_map
 parser.add_argument('-o', help='output zero-distance and nonzero-distance fragment files', type= bool, default= False)
 parser.add_argument('-c', help='cutoff for nucleotide distance to restriction site (ex. 3)', type=int, default=3)
 parser.add_argument('-w', help='wildcard for sample (ex. HBCRACKHiC-K562-HN-TD-R1_ACAGTG_L008)', type=str, required=True)
+parser.add_argument('-r', help='read length (ex. 100)', type=int, required=True)
 args = parser.parse_args()
 
 def write_distance_files(l1, l2, Zf, nonZf, min_d):
@@ -98,7 +99,7 @@ def main():
 				sys.exit()
 			# Get start and end of fragment
 			start = int(line1.split()[3])
-			end = int(line2.split()[3]) + 99
+			end = int(line2.split()[3]) + (args.r - 1)
 			# Find closest hindIII sites
 			closest_start = min(hindIII_sites[chrom1], key=lambda x: abs(start-x))
 			closest_end = min(hindIII_sites[chrom1], key=lambda x: abs(end-x))
