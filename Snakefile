@@ -57,7 +57,7 @@ rule split:
 		#dynamic('split_reads/{sample}/split_{n}')
 	shell:
 		'''
-		tail -n+28 {input.s} | split -a 4 -d -l 100000 - \
+		tail -n+28 {input.s} | split -a 4 -d -l 1000000 - \
 		split_reads/{wildcards.sample}/split_
 		'''
 	
@@ -70,7 +70,8 @@ if config['restrict_enzy'] == 'DpnII':
 			'distances/{sample}/abs_frag_distances_{n}'
 		shell:
 			'scripts/dpnII_abs_frag_distance.py -s {input.s} '
-			'-w {wildcards.sample} -r ' + config['read_length']
+			'-w {wildcards.sample} -r ' + config['read_length'] +
+			' -d ' + config['data_dir']
 
 elif config['restrict_enzy'] == 'HindIII':
 	rule filter_near_sites:
