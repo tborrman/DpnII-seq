@@ -95,7 +95,10 @@ def get_nearest_dpnII_site(cut_sites, p):
 
 	'''
 	i = bisect.bisect_left(cut_sites, p)
-	n = min(cut_sites[i-1], cut_sites[i], key=lambda x: abs(x-p))
+	if i == len(cut_sites):
+		n = cut_sites[-1]
+	else:
+		n = min(cut_sites[i-1], cut_sites[i], key=lambda x: abs(x-p))
 	return n
 
 def main():
