@@ -16,7 +16,7 @@ parser.add_argument('-o', help='output zero-distance and nonzero-distance fragme
 parser.add_argument('-c', help='cutoff for nucleotide distance to restriction site (ex. 3)', type=int, default=3)
 parser.add_argument('-w', help='wildcard for sample (ex. HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test)', type=str, required=True)
 parser.add_argument('-r', help='read length (ex. 100)', type=int, required=True)
-parser.add_argument('-d', help='path to data directory (ex. /home/tb37w/project/Research/digest/dpnII/data/)',
+parser.add_argument('-d', help='path to data directory (ex. /home/tb37w/project/Research/digest/dpnII/data)',
  type=str, required=True)
 args = parser.parse_args()
 
@@ -36,7 +36,7 @@ def make_dpnII_site_dict(site_path):
 	dpnII_sites = {}
 	chroms = map(str, range(1,23)) + ['X','Y']
 	for chrom in chroms:
-		DPN = open(site_path + 'dpnII_sites/dpnII_sites_chr' + chrom + '.bed', 'r')
+		DPN = open(site_path + '/dpnII_sites/dpnII_sites_chr' + chrom + '.bed', 'r')
 		coords = []
 		for line in DPN:
 			# Change coordinates from BED file format
