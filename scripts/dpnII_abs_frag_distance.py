@@ -2,6 +2,9 @@
 import argparse
 import sys
 import os
+import timeit
+import bisect
+
 
 # Flush STOUT continuously
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
@@ -13,7 +16,38 @@ parser.add_argument('-o', help='output zero-distance and nonzero-distance fragme
 parser.add_argument('-c', help='cutoff for nucleotide distance to restriction site (ex. 3)', type=int, default=3)
 parser.add_argument('-w', help='wildcard for sample (ex. HBCRACKHiC-K562-DN-TD-R1_GCCAAT_L008_test)', type=str, required=True)
 parser.add_argument('-r', help='read length (ex. 100)', type=int, required=True)
+parser.add_argument('-d', help='path to data directory (ex. /home/tb37w/project/Research/digest/dpnII/data/)',
+ type=str, required=True)
 args = parser.parse_args()
+
+def make_dpnII_site_dict(site_path):
+	'''
+	Make dictionary of dpnII sites
+
+	Args: 
+		site_path: string path to dpnII site data
+
+	Returns:
+		dpnII_sites: dictionary with chromosomes 
+		for keys and sorted list of coordinates of
+		start and ends of dpnII sites for values
+
+	'''
+	dpnII_sites = {}
+	chroms = map(str, range(1,23)) + ['X','Y']
+	for chrom in chroms:
+		DPN = open(site_path + 'dpnII_sites/dpnII_sites_chr' + chrom + '.bed', 'r')
+		coords = []
+		for line in DPN:
+			# Change coordinates from BED file format
+			coord1 = int(line.split()[1]) + 1
+			coord2 = int(line.split()[2])
+			coords.append(coord1)
+			coords.append(coord2)
+		dpnII_sites['chr'+chrom] = coords
+		DPN.close()
+	print 'Processed DpnII site coordinate files'
+	return dpnII_sites
 
 def write_distance_files(l1, l2, Zf, nonZf, min_d):
 	'''
@@ -47,25 +81,26 @@ def write_cutoff_file(l1, l2, cf, min_d, c):
 	if min_d <= c:
 		cf.write(l1 + l2)
 
+def get_nearest_dpnII_site(cut_sites, p):
+	'''
+	Use bisect algorithm to find nearest 
+	dpnII cut site to p 
+
+	Args:
+		cut_sites: sorted list of dpnII cut sites 
+		p: int base pair position
+
+	Returns:
+		n: int nearest dpnII cut site to p
+
+	'''
+	i = bisect.bisect_left(cut_sites, p)
+	n = min(cut_sites[i-1], cut_sites[i], key=lambda x: abs(x-p))
+	return n
 
 def main():
-
-	# Store dpnII coordinates in dictionary
-	dpnII_sites = {}
-	chroms = map(str, range(1,23)) + ['X','Y']
-	for chrom in chroms:
-		DPN = open('/home/tb37w/project/Research/digest/dpnII/test/hg19/dpnII/dpnII_sites_chr'+chrom+'.bed', 'r')
-		coords = []
-		for line in DPN:
-			# Change coordinates from BED file format
-			coord1 = int(line.split()[1]) + 1
-			coord2 = int(line.split()[2])
-			coords.append(coord1)
-			coords.append(coord2)
-		dpnII_sites['chr'+chrom] = coords
-		DPN.close()
-	print 'Processed coordinate files'
-
+	# Make DpnII site dictionary 
+	dpnII_sites = make_dpnII_site_dict(args.d)
 	# Parse SAM file
 	SAM = open(args.s, 'r')
 	index = args.s[-4:]
@@ -100,11 +135,11 @@ def main():
 			# Get start and end of fragment
 			start = int(line1.split()[3])
 			end = int(line2.split()[3]) + (args.r - 1)
-			# Find closest dpnII sites
-			closest_start = min(dpnII_sites[chrom1], key=lambda x: abs(start-x))
-			closest_end = min(dpnII_sites[chrom1], key=lambda x: abs(end-x))
+			# Find nearest dpnII cut site
+			nearest_start = get_nearest_dpnII_site(dpnII_sites[chrom1], start)
+			nearest_end = get_nearest_dpnII_site(dpnII_sites[chrom1], end)
 			# Minimum distance to dpnII sites from either end
-			min_distance = min(abs(start-closest_start), abs(end-closest_end))
+			min_distance = min(abs(start-nearest_start), abs(end-nearest_end))
 			if args.o:
 				write_distance_files(line1, line2, ZERO_DIST_OUT, NONZERO_DIST_OUT, min_distance)
 			OUT.write(str(min_distance) + '\n')
@@ -118,5 +153,8 @@ def main():
 		NONZERO_DIST_OUT.close()
 
 if __name__ == '__main__':
+	start = timeit.default_timer()
 	main()
+	stop = timeit.default_timer()
+	print 'Running time: ' +  str(stop - start)
 
