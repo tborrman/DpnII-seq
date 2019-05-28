@@ -27,6 +27,26 @@
 		"memory": "\"rusage[mem=5000] span[hosts=1]\"",
 		"output":	"logs/cluster/{wildcards.sample}_filter_near_sites.out",
 		"error"	: "logs/cluster/{wildcards.sample}_filter_near_sites.err"
+	},
+
+	"bin_40kb":
+	{  
+		"queue"	: "long",
+	  	"time": "12:00",
+		"cores"	: 1,
+		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}_bin_40kb.out",
+		"error"	: "logs/cluster/{wildcards.sample}_bin_40kb.err"
+	},
+
+	"bin_500kb":
+	{  
+		"queue"	: "long",
+	  	"time": "12:00",
+		"cores"	: 1,
+		"memory": "\"rusage[mem=10000] span[hosts=1]\"",
+		"output":	"logs/cluster/{wildcards.sample}_bin_500kb.out",
+		"error"	: "logs/cluster/{wildcards.sample}_bin_500kb.err"
 	}
 }
 	
