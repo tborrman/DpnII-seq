@@ -46,7 +46,7 @@ def make_dpnII_site_dict(site_path):
 			coords.append(coord2)
 		dpnII_sites['chr'+chrom] = coords
 		DPN.close()
-	print 'Processed DpnII site coordinate files'
+	#print 'Processed DpnII site coordinate files'
 	return dpnII_sites
 
 def write_distance_files(l1, l2, Zf, nonZf, min_d):
@@ -120,8 +120,8 @@ def main():
 			break
 		else:
 			counter += 1
-			if counter%100 == 0:
-				print 'On fragment: '+ str(counter)
+			# if counter%100 == 0:
+			# 	print 'On fragment: '+ str(counter)
 			# Get chromosome
 			chrom1 = line1.split()[2]
 			chrom2 = line2.split()[2]
