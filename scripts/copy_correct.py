@@ -32,7 +32,7 @@ def correct_reads(r, c):
 	if c == 'NA' or c == '0':
 		correct = 'NA'
 	else:
-		correct = round(int(r) / ((int(c) / 2.0)))
+		correct = round(int(r) / ((int(c) / 2.0)), 2)
 	return correct
 
 def main():
