@@ -164,7 +164,7 @@ rule copy_number_correct_500kb:
 		o='copy_correct_coverage/500kb/{sample}_copy_correct_coverage_500kb.bed'
 	shell:
 		'scripts/copy_correct.py -i {input.c} '
-		'-c ' + config['data_dir'] + '/copy_number/K562_copynumber_500kb.bed '
+		'-c ' + config['data_dir'] + '/copy_number/COSMIC_K562_copy_number_500kb.bedGraph '
 		'> {output.o}'
 
 rule copy_number_correct_40kb:
@@ -174,7 +174,7 @@ rule copy_number_correct_40kb:
 		o='copy_correct_coverage/40kb/{sample}_copy_correct_coverage_40kb.bed'
 	shell:
 		'scripts/copy_correct.py -i {input.c} '
-		'-c ' + config['data_dir'] + '/copy_number/K562_copynumber_40kb.bed '
+		'-c ' + config['data_dir'] + '/copy_number/COSMIC_K562_copy_number_40kb.bedGraph '
 		'> {output.o}'
 
 

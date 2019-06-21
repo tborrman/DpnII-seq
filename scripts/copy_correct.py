@@ -29,7 +29,7 @@ def check_bins_match(s, c):
 	return
 
 def correct_reads(r, c):
-	if c == 'NA':
+	if c == 'NA' or c == '0':
 		correct = 'NA'
 	else:
 		correct = round(int(r) / ((int(c) / 2.0)))
