@@ -83,6 +83,18 @@ elif config['restrict_enzy'] == 'HindIII':
 		shell:
 			'scripts/hindIII_abs_frag_distance.py -s {input.s} '
 			'-w {wildcards.sample} -r ' + config['read_length']
+
+elif config['restrict_enzy'] == 'FatI':
+	rule filter_near_sites:
+		input: 
+			s ='split_reads/{sample}/split_{n}'
+		output:
+			'filtered_sams/{sample}/3_distance_{n}',
+			'distances/{sample}/abs_frag_distances_{n}'
+		shell:
+			'scripts/fatI_abs_frag_distance.py -s {input.s} '
+			'-w {wildcards.sample} -r ' + config['read_length'] +
+			' -d ' + config['data_dir']
 else:
 	print('No restriction enzyme given in config.yaml')
 	sys.exit()
@@ -129,6 +141,17 @@ elif config['restrict_enzy'] == 'HindIII':
 		shell:
 			'''
 			scripts/hindIII_abs_frag_distance_hist.R \
+			-f {input.d} -w {wildcards.sample}
+			''' 
+elif config['restrict_enzy'] == 'FatI':
+	rule plot_distance_distribution:
+		input:
+			d = 'distances/{sample}/{sample}_abs_frag_distances.txt'
+		output:
+			p = 'plots/{sample}_distance_hist.pdf'
+		shell:
+			'''
+			scripts/fatI_abs_frag_distance_hist.R \
 			-f {input.d} -w {wildcards.sample}
 			''' 
 else:
