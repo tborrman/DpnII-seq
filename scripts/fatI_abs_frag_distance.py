@@ -36,7 +36,7 @@ def make_fatI_site_dict(site_path):
 	fatI_sites = {}
 	chroms = map(str, range(1,23)) + ['X','Y']
 	for chrom in chroms:
-		DPN = open(site_path + '/fatI_sites/fatI_sites_chr' + chrom + '.bed', 'r')
+		DPN = open(site_path + '/fatI_sites/FatI_sites_chr' + chrom + '.bed', 'r')
 		coords = []
 		for line in DPN:
 			# Change coordinates from BED file format
