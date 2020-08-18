@@ -10,6 +10,11 @@ This workflow has options for digesting with the following restriction enzymes:
 - [HindIII](https://www.neb.com/products/r0104-hindiii#Product%20Information)
 - [FatI](https://www.neb.com/products/r0650-fati#Product%20Information)
 
+As K562 cells have a primarily triploid karyotype with regions of variable copy number, 
+the analysis workflow corrects coverage tracks to a diploid state genome wide. 
+If the user is applying DpnII-seq to cells with variable copy number states 
+we provide scripts to correct for this bias using a Gaussian mixture model approach.
+
 ## Requirements
 Install Snakemake via Miniconda [here](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
 ##### Set up Channels
