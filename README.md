@@ -70,7 +70,7 @@ Currently the DpnII-seq workflow has only been tested in an LSF cluster environm
 ```bash
 snakemake -j 10 --latency-wait 60 --cluster-config cluster.json --cluster "bsub -q {cluster.queue} -W {cluster.time} -R {cluster.memory} -n {cluster.cores} -o {cluster.output} -e {cluster.error}" -p
 ```
-## Contributing to liquid-chromatin-Hi-C
+## Contributing to DpnII-seq
 All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome!
 
 ## References
