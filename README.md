@@ -1,4 +1,6 @@
 # DpnII-seq
+![snakemake-run](https://img.shields.io/badge/snakemake--run-passing-brightgreen)
+
 DpnII-seq is an experimental assay to measure the genome wide cutting frequency of the restriction enzyme DpnII. 
 Originally DpnII-seq was developed alongside [Liquid Chromatin Hi-C](https://www.biorxiv.org/content/10.1101/704957v1)
 to control for biases in cutting frequency when estimating chromatin contact stability in K562 cells. 
@@ -14,6 +16,12 @@ As K562 cells have a primarily triploid karyotype with regions of variable copy 
 the analysis workflow corrects coverage tracks to a diploid state genome wide. 
 If the user is applying DpnII-seq to cells with variable copy number states 
 we provide scripts to correct for this bias using a Gaussian mixture model approach.
+
+## Experimental Protocol
+<img src="https://github.com/tborrman/DpnII-seq/blob/master/img/dpnII-seq.PNG" alt="dpn" width=300px>
+
+## Computational Workflow
+<img src="https://github.com/tborrman/DpnII-seq/blob/master/img/dag.svg" alt="dag" width=500px>
 
 ## Requirements
 Install Snakemake via Miniconda [here](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
@@ -33,5 +41,4 @@ source activate DpnII-seq
 ```bash
 snakemake -j 10 --latency-wait 60 --cluster-config cluster.json --cluster "bsub -q {cluster.queue} -W {cluster.time} -R {cluster.memory} -n {cluster.cores} -o {cluster.output} -e {cluster.error}" -p
 ```
-## DAG
-<img src="https://github.com/tborrman/DpnII-seq/blob/master/dag.svg" alt="dag" width=1000px>
+
