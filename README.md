@@ -5,7 +5,7 @@ DpnII-seq is an experimental assay to measure the genome wide cutting frequency 
 Originally DpnII-seq was developed alongside [Liquid Chromatin Hi-C](https://www.biorxiv.org/content/10.1101/704957v1)
 to control for biases in cutting frequency when estimating chromatin contact stability in K562 cells. 
 However, the DpnII-seq assay and analysis pipeline could be modified for analyzing cutting frequency for variable restriction enzymes in 
-variable cell types. The DpnII-seq workflow performs mapping, filtering of artifcats, multiple resolution binning, copy number correction
+variable cell types. The DpnII-seq workflow performs mapping, filtering of artifacts, multiple resolution binning, copy number correction
 and plotting of quality metrics.
 
 This workflow has options for digesting with the following restriction enzymes:
